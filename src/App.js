@@ -9,31 +9,39 @@ function App() {
   return (
     <div>
       <Stack alignItems="center" spacing={4}>
-        <Typography fontSize={30} fontWeight="bold">Snake</Typography>
+        <Typography
+          color="white"
+          fontSize={30}
+          fontWeight="bold"
+          fontFamily="pixelify sans"
+          sx={{ userSelect: "none" }}
+        >
+          Snake
+        </Typography>
         <Stack
           direction="row"
           justifyContent="space-around"
           alignItems="center"
-          bgcolor="gray"
-          width={600}
-          height={60}
+          bgcolor="darkgreen"
+          width={460}
+          height={100}
         >
           <Button
             variant="contained"
-            color="success"
+            color="inherit"
             onClick={() => setGameState(1)}
           >
-            Start Game
+            <Typography fontSize={24} fontFamily="pixelify sans">{gameState === 1 ? "End Game" : "Start Game"}</Typography>
           </Button>
           <Button
             variant="contained"
             color="warning"
             onClick={() => setSettingsWindowOpen(true)}
           >
-            Settings
+            <Typography fontSize={24} fontFamily="pixelify sans">Settings</Typography>
           </Button>
         </Stack>
-        <Game />
+        <Game state={gameState} />
       </Stack>
     </div>
   );
