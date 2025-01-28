@@ -10,7 +10,7 @@ function Square({ filled=false }) {
 function Column({ squares }) {
   return (
     <Stack>
-      {Array.from(Array(...squares)).map((square) => (
+      {Array.from([...squares]).map((square) => (
         <Square filled={square} />
       ))}
     </Stack>
@@ -20,7 +20,7 @@ function Column({ squares }) {
 function Grid({ grid }) {
   return (
     <Stack direction="row">
-      {Array.from(Array(...grid)).map((column) => (
+      {Array.from([...grid]).map((column) => (
         <Column squares={column} />
       ))}
     </Stack>
@@ -56,49 +56,64 @@ function Game({ state }) {
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
   ]);
 
-  const [playerSquares, setPlayerSquares] = useState([[11,12], [12,12], [13,12]]);
-  const [points, setPoints] = useState(0);
-  const [direction, setDirection] = useState(0); // 0=stopped, 1=up, 2=right, 3=down, 4=left
+  const [playerSquares, setPlayerSquares] = useState([]);
+  const [score, setScore] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    switch (state) {
+      case 1:
+        setPlayerSquares([[12,12]]);
+        break;
+      default:
+        setDirection(0);
+    }
+  }, [state]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      let updatedPlayerSquares = [...playerSquares];
-
-      switch (direction) {
-        case 1:
-          updatedPlayerSquares.map((pos) => pos[1] += 1);
-          break;
-        case 2:
-          updatedPlayerSquares.map((pos) => pos[0] += 1);
-            break;
-        case 3:
-          updatedPlayerSquares.map((pos) => pos[1] -= 1);
-          break;
-        case 4:
-          updatedPlayerSquares.map((pos) => pos[0] -= 1);
-          break;
-        default:
-          break;
-      }
-
-      setPlayerSquares(updatedPlayerSquares);
-    }, 1000);
-
-    let updatedGrid = [...grid];
-    // kefiejgfe
-
+      setPlayerSquares((prevPlayerSquares) =>
+        prevPlayerSquares.map(([x, y]) => {
+          switch (direction) {
+            case 1: // Move up
+              return [x, y-1];
+            case 2: // Move right
+              return [x+1, y];
+            case 3: // Move down
+              return [x, y+1];
+            case 4: // Move left
+              return [x-1, y];
+            default:
+              return [x, y];
+          }
+        })
+      );
+  
+      // Update the grid based on new playerSquares
+      setGrid((prevGrid) => {
+        const newGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid
+        for (let i = 0; i < playerSquares.length; i++) {
+          const [x, y] = playerSquares[i];
+          newGrid[x][y] = 1;
+        }        
+        return newGrid;
+      });
+    }, 100);
+  
     return () => clearInterval(interval);
-  }, [direction, playerSquares, grid]);
+  }, [direction, playerSquares]);
+  
 
   return (
-    <Stack justifyContent="center" alignItems="center">
-      { state === 0 &&
-        <Typography color="white" fontFamily="pixelify sans" position="absolute">Waiting for game to begin...</Typography>
-      }
-      <Box border={2} borderColor="#ff00ff">
+    <Box>
+      <Typography color="white" fontSize={20} fontFamily="pixelify sans">Score: {score}</Typography>
+      <Stack justifyContent="center" alignItems="center" border={2} borderColor="#ffffff">
+        { state === 0 &&
+          <Typography color="white" fontFamily="pixelify sans" position="absolute">Waiting for game to begin...</Typography>
+        }
         <Grid grid={grid} />
-      </Box>
-    </Stack>
+      </Stack>
+    </Box>
   );
 }
 

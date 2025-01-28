@@ -6,6 +6,32 @@ function App() {
   const [gameState, setGameState] = React.useState(0);
   const [settingsWindowOpen, setSettingsWindowOpen] = React.useState(false);
 
+  const handleGameState = () => {
+    switch (gameState) {
+      case 1:
+        setGameState(2);
+        break;
+      default:
+        setGameState(1);
+    }
+  }
+
+  let buttonText = "Start Game";
+  
+  switch (gameState) {
+    case 0:
+      buttonText = "Start Game";
+      break;
+    case 1:
+      buttonText = "End Game";
+      break;
+    case 2:
+      buttonText = "Retry";
+      break;
+    default:
+      buttonText = "Error";
+  }
+
   return (
     <div>
       <Stack alignItems="center" spacing={4}>
@@ -29,9 +55,9 @@ function App() {
           <Button
             variant="contained"
             color="inherit"
-            onClick={() => setGameState(1)}
+            onClick={handleGameState}
           >
-            <Typography fontSize={24} fontFamily="pixelify sans">{gameState === 1 ? "End Game" : "Start Game"}</Typography>
+            <Typography fontSize={24} fontFamily="pixelify sans">{buttonText}</Typography>
           </Button>
           <Button
             variant="contained"
