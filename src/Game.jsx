@@ -27,46 +27,59 @@ function Grid({ grid }) {
   );
 }
 
-function Game({ state }) {
+function Game({ state, setState }) {
   const [grid, setGrid] = useState([
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-  ]);
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  ]); // 25 x 25
 
-  const [playerSquares, setPlayerSquares] = useState([]);
   const [score, setScore] = useState(0);
+  const [playerSquares, setPlayerSquares] = useState([]);
   const [direction, setDirection] = useState(0);
+  const [foodPosition, setFoodPosition] = useState([]);
+
+  const [message, setMessage] = useState("WAITING FOR GAME TO START...");
 
   useEffect(() => {
-    switch (state) {
-      case 1:
-        setPlayerSquares([[12,12]]);
-        break;
-      default:
-        setDirection(0);
+    if (state === 1) {
+      setPlayerSquares([]);
+      setDirection(0);
+      setMessage("READY?");
+      setTimeout(() => {
+        setMessage("GO!");
+        setTimeout(() => {
+          setPlayerSquares([[12,13],[13,13],[14,13]]);
+          setMessage("");
+        }, 1000);
+      }, 2000);
+    } else if (state === 2) {
+      setPlayerSquares([]);
+      setFoodPosition([]);
+      setMessage("GAME OVER");
     }
   }, [state]);
 
@@ -77,12 +90,12 @@ function Game({ state }) {
           switch (direction) {
             case 1: // Move up
               return [x, y-1];
-            case 2: // Move right
-              return [x+1, y];
+            case 2: // Move left
+              return [x-1, y];
             case 3: // Move down
               return [x, y+1];
-            case 4: // Move left
-              return [x-1, y];
+            case 4: // Move right
+              return [x+1, y];
             default:
               return [x, y];
           }
@@ -94,23 +107,51 @@ function Game({ state }) {
         const newGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid
         for (let i = 0; i < playerSquares.length; i++) {
           const [x, y] = playerSquares[i];
-          newGrid[x][y] = 1;
-        }        
+          if (x >= 0 && x < 25 && y >= 0 && y < 25) newGrid[x][y] = 1;
+          else setState(2);
+        }   
         return newGrid;
       });
     }, 100);
   
     return () => clearInterval(interval);
+  // eslint-disable-next-line
   }, [direction, playerSquares]);
   
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      switch (e.key) {
+        case "w":
+          if (direction !== 3) setDirection(1);
+          break;
+        case "a":
+          if (direction !== 4) setDirection(2);
+          break;
+        case "s":
+          if (direction !== 1) setDirection(3);
+          break;
+        case "d":
+          if (direction !== 2) setDirection(4);
+          break;
+        default:
+          // do nothing
+      }
+    };
+
+    window.addEventListener("keypress", handleKeyPress);
+    return () => window.removeEventListener("keypress", handleKeyPress);
+  }, [direction]);
 
   return (
     <Box>
-      <Typography color="white" fontSize={20} fontFamily="pixelify sans">Score: {score}</Typography>
-      <Stack justifyContent="center" alignItems="center" border={2} borderColor="#ffffff">
-        { state === 0 &&
-          <Typography color="white" fontFamily="pixelify sans" position="absolute">Waiting for game to begin...</Typography>
-        }
+      <Typography color="white" fontSize={18} fontFamily="pixelify sans">SCORE: {score}</Typography>
+      <Stack
+        justifyContent="center"
+        alignItems="center"
+        border={2}
+        borderColor="#ffffff"
+      >
+        <Typography color="white" fontSize={18} fontFamily="pixelify sans" position="absolute">{message}</Typography>
         <Grid grid={grid} />
       </Stack>
     </Box>
