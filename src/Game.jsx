@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
+import { playSound } from "./App";
 
 function Square({ filled=false }) {
   return (
@@ -80,6 +81,7 @@ function Game({ state, setState }) {
       setPlayerSquares([]);
       setFoodPosition([]);
       setMessage("GAME OVER");
+      playSound("game-over.mp3");
     }
   }, [state]);
 

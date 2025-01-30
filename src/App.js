@@ -3,12 +3,12 @@ import { Button, Stack, Typography } from "@mui/material";
 import Game from "./Game";
 import Settings from "./Settings";
 
-function App() {
-  const playSound = (path) => {
-    const audio = new Audio(path);
-    audio.play();
-  };
+export function playSound(path) {
+  const audio = new Audio(path);
+  audio.play();
+};
 
+function App() {
   const [gameState, setGameState] = React.useState(0);
   const [settingsWindowOpen, setSettingsWindowOpen] = React.useState(false);
 
