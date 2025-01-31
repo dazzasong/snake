@@ -58,6 +58,8 @@ function Game({ state, setState }) {
   ]); // 25 x 25
 
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+
   const [direction, setDirection] = useState(0);
   const [playerSquares, setPlayerSquares] = useState([]);
   const [foodPosition, setFoodPosition] = useState([]);
@@ -68,6 +70,8 @@ function Game({ state, setState }) {
 
   useEffect(() => {
     if (state === 1) {
+      if (score > highScore) setHighScore(score);
+      setScore(0);
       setPlayerSquares([[12,12]]);
       setFoodPosition(randomPosition());
       setMessage("READY?");
@@ -78,9 +82,10 @@ function Game({ state, setState }) {
         }, 1000);
       }, 2000);
     } else if (state === 2) {
+      setGrid((prevGrid) => prevGrid.map((column) => column.map(() => 0)));
+      setDirection(0);
       setPlayerSquares([]);
       setFoodPosition([]);
-      setDirection(0);
       setMessage("GAME OVER");
       playSound("game-over.mp3");
     }
@@ -106,35 +111,33 @@ function Game({ state, setState }) {
           }
         })
       );
-  
-      // Update the grid based on new playerSquares
-      setGrid((prevGrid) => {
-        const newGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid
 
-        for (let i = 0; i < playerSquares.length; i++) {
-          const [x,y] = playerSquares[i];
-          if (x >= 0 && x < 25 && y >= 0 && y < 25) newGrid[x][y] = 1;
-          else setState(2);
-        }
-
-        const [x,y] = foodPosition;
-        newGrid[x][y] = 1;
-        
-        if (playerSquares[0][0] === foodPosition[0] && playerSquares[0][1] === foodPosition[1]) {
-          //playerSquares.push();
-          setScore((prevScore) => prevScore + 1);
-          setFoodPosition(randomPosition);
-          playSound("food.mp3");
-          console.log("consumed food!")
-        }
-        
-        return newGrid;
-      });
+      if (playerSquares[0][0] === foodPosition[0] && playerSquares[0][1] === foodPosition[1]) {
+        //playerSquares.push();
+        setScore((prevScore) => prevScore + 1);
+        setFoodPosition(randomPosition);
+        playSound("food.mp3");
+      }
     }, 100);
+
+    // Update the grid based on new playerSquares
+    setGrid((prevGrid) => {
+      const newGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid
+
+      for (let i = 0; i < playerSquares.length; i++) {
+        const [x,y] = playerSquares[i];
+        if (x >= 0 && x < 25 && y >= 0 && y < 25) newGrid[x][y] = 1;
+        else setState(2);
+      }
+
+      const [x,y] = foodPosition;
+      newGrid[x][y] = 1;
+      
+      return newGrid;
+    });
   
     return () => clearInterval(interval);
-  // eslint-disable-next-line
-  }, [direction, playerSquares]);
+  }, [direction, playerSquares, foodPosition]);
   
   // Set direction based on user inputs
   useEffect(() => {
@@ -162,15 +165,18 @@ function Game({ state, setState }) {
   }, [direction]);
 
   return (
-    <Box>
-      <Typography color="white" fontSize={18} fontFamily="pixelify sans">SCORE: {score}</Typography>
+    <Box color="white">
+      <Stack direction="row" spacing={2}>
+        <Typography fontSize={18} fontFamily="pixelify sans">SCORE: {score}</Typography>
+        <Typography fontSize={18} fontFamily="pixelify sans">HIGH SCORE: {highScore}</Typography>
+      </Stack>
       <Stack
         justifyContent="center"
         alignItems="center"
         border={2}
         borderColor="#ffffff"
       >
-        <Typography color="white" fontSize={18} fontFamily="pixelify sans" position="absolute">{message}</Typography>
+        <Typography fontSize={18} fontFamily="pixelify sans" position="absolute">{message}</Typography>
         <Grid grid={grid} />
       </Stack>
     </Box>
