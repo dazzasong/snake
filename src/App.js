@@ -59,6 +59,8 @@ function App() {
           <Button
             variant="contained"
             color="inherit"
+            disableElevation
+            disableRipple
             onClick={() => {
               handleGameState();
               playSound("beep.mp3", isMuted);
@@ -69,6 +71,8 @@ function App() {
           <Button
             variant="contained"
             color="warning"
+            disableElevation
+            disableRipple
             onClick={() => {
               setSettingsWindowOpen(!settingsWindowOpen);
               playSound("beep.mp3", isMuted);

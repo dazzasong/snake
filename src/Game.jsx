@@ -77,7 +77,11 @@ function Game({ state, setState, isMuted }) {
         setTimeout(() => {
           setMessage("");
           setPlayerSquares([[12, 12]]);
-          setFoodPosition(randomPosition());
+          setFoodPosition(() => {
+            let randPos = randomPosition();
+            while (playerSquares.includes(randPos)) randPos = randomPosition();
+            return randPos;
+          });
         }, 1000);
       }, 2000);
     } else if (state === 2) {
