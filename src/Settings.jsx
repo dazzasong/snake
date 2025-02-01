@@ -1,8 +1,7 @@
-import { Box, Button, Slider, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Switch, Typography } from "@mui/material";
+import { playSound } from "./App";
 
-function Settings({ setSettingsWindowOpen }) {
-  const clickSfx = new Audio("click.mp3");
-
+function Settings({ setSettingsWindowOpen, isMuted, setIsMuted }) {
   return (
     <Stack
       alignItems="center"
@@ -18,17 +17,18 @@ function Settings({ setSettingsWindowOpen }) {
           size="small"
           onClick={() => {
             setSettingsWindowOpen(false);
-            clickSfx.play();
+            playSound("beep.mp3", isMuted);
           }}
         >
           x
         </Button>
       </Box>
-      <Box width={260}>
-        <Stack direction="row" spacing={2} alignItems="center">
-          <Typography fontFamily="pixelify sans">Volume:</Typography>
-          <Slider step={20} />
+      <Box>
+        <Stack direction="row" alignItems="center">
+          <Typography fontFamily="pixelify sans">Mute sounds:</Typography>
+          <Switch checked={isMuted} onChange={() => setIsMuted(!isMuted)} />
         </Stack>
+        <Typography fontFamily="pixelify sans">-- WASD or Arrow Keys to move --</Typography>
       </Box>
     </Stack>
   );

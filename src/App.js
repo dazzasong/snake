@@ -1,16 +1,19 @@
-import React from "react";
+import { useState } from "react";
 import { Button, Stack, Typography } from "@mui/material";
 import Game from "./Game";
 import Settings from "./Settings";
 
-export function playSound(path) {
+export function playSound(path, muted=false) {
+  if (muted) return;
   const audio = new Audio(path);
   audio.play();
 };
 
 function App() {
-  const [gameState, setGameState] = React.useState(0);
-  const [settingsWindowOpen, setSettingsWindowOpen] = React.useState(false);
+  const [gameState, setGameState] = useState(0);
+  const [settingsWindowOpen, setSettingsWindowOpen] = useState(false);
+
+  const [isMuted, setIsMuted] = useState(false);
 
   const handleGameState = () => {
     if (gameState === 1) setGameState(2);
@@ -58,7 +61,7 @@ function App() {
             color="inherit"
             onClick={() => {
               handleGameState();
-              playSound("click.mp3");
+              playSound("beep.mp3", isMuted);
             }}
           >
             <Typography fontSize={24} fontFamily="pixelify sans">{buttonText}</Typography>
@@ -68,15 +71,15 @@ function App() {
             color="warning"
             onClick={() => {
               setSettingsWindowOpen(!settingsWindowOpen);
-              playSound("click.mp3");
+              playSound("beep.mp3", isMuted);
             }}
           >
             <Typography fontSize={24} fontFamily="pixelify sans">Settings</Typography>
           </Button>
         </Stack>
-        <Game state={gameState} setState={setGameState} />
+        <Game state={gameState} setState={setGameState} isMuted={isMuted} />
         { settingsWindowOpen &&
-          <Settings setSettingsWindowOpen={setSettingsWindowOpen} />
+          <Settings setSettingsWindowOpen={setSettingsWindowOpen} isMuted={isMuted} setIsMuted={setIsMuted} />
         }
       </Stack>
     </div>

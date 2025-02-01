@@ -28,7 +28,7 @@ function Grid({ grid }) {
   );
 }
 
-function Game({ state, setState }) {
+function Game({ state, setState, isMuted }) {
   const [grid, setGrid] = useState([
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -70,29 +70,31 @@ function Game({ state, setState }) {
 
   useEffect(() => {
     if (state === 1) {
-      if (score > highScore) setHighScore(score);
       setScore(0);
-      setPlayerSquares([[12,12]]);
-      setFoodPosition(randomPosition());
       setMessage("READY?");
       setTimeout(() => {
         setMessage("GO!");
         setTimeout(() => {
           setMessage("");
+          setPlayerSquares([[12, 12]]);
+          setFoodPosition(randomPosition());
         }, 1000);
       }, 2000);
     } else if (state === 2) {
+      if (score > highScore) {
+        setHighScore(score);
+        setMessage("GAME OVER - NEW BEST!");
+      } else setMessage("GAME OVER");
       setGrid((prevGrid) => prevGrid.map((column) => column.map(() => 0)));
       setDirection(0);
       setPlayerSquares([]);
       setFoodPosition([]);
-      setMessage("GAME OVER");
-      playSound("game-over.mp3");
+      playSound("game-over.mp3", isMuted);
     }
   }, [state]);
 
   useEffect(() => {
-    if (state !== 1) return; // Only run during game
+    if (state !== 1 || playerSquares.length === 0) return; // Only run during game
 
     const interval = setInterval(() => {
       setPlayerSquares((prevPlayerSquares) =>
@@ -112,11 +114,33 @@ function Game({ state, setState }) {
         })
       );
 
+      // Snake grows when it consumes food
       if (playerSquares[0][0] === foodPosition[0] && playerSquares[0][1] === foodPosition[1]) {
-        //playerSquares.push();
+        /*
+        setPlayerSquares((prevPlayerSquares) => {
+          const [x, y, aim] = prevPlayerSquares[-1];
+          switch (aim) { // Last player square direction
+            case 1: // Up
+              prevPlayerSquares.push([x, y+1, aim]);
+              break;
+            case 2: // Left
+              prevPlayerSquares.push([x+1, y, aim]);
+              break;
+            case 3: // Down
+              prevPlayerSquares.push([x, y-1, aim]);
+              break;
+            case 4: // Right
+              prevPlayerSquares.push([x-1, y, aim]);
+              break;
+            default:
+              // do nothing
+          }
+          return prevPlayerSquares;
+        });
+        */
         setScore((prevScore) => prevScore + 1);
         setFoodPosition(randomPosition);
-        playSound("food.mp3");
+        playSound("food.mp3", isMuted);
       }
     }, 100);
 
@@ -125,12 +149,12 @@ function Game({ state, setState }) {
       const newGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid
 
       for (let i = 0; i < playerSquares.length; i++) {
-        const [x,y] = playerSquares[i];
+        const [x, y] = playerSquares[i];
         if (x >= 0 && x < 25 && y >= 0 && y < 25) newGrid[x][y] = 1;
         else setState(2);
       }
 
-      const [x,y] = foodPosition;
+      const [x, y] = foodPosition;
       newGrid[x][y] = 1;
       
       return newGrid;
@@ -141,17 +165,23 @@ function Game({ state, setState }) {
   
   // Set direction based on user inputs
   useEffect(() => {
-    const handleKeyPress = (e) => {
+    if (state !== 1 || playerSquares.length === 0) return; // Only run when game starts
+
+    const handleKeyDown = (e) => {
       switch (e.key) {
+        case "ArrowUp":
         case "w":
-          if (direction !== 3) setDirection(1);
+          if (direction !== 3) setDirection(1); // Checks for opposite direction
           break;
+        case "ArrowLeft":
         case "a":
           if (direction !== 4) setDirection(2);
           break;
+        case "ArrowDown":
         case "s":
           if (direction !== 1) setDirection(3);
           break;
+        case "ArrowRight":
         case "d":
           if (direction !== 2) setDirection(4);
           break;
@@ -160,9 +190,9 @@ function Game({ state, setState }) {
       }
     };
 
-    window.addEventListener("keypress", handleKeyPress);
-    return () => window.removeEventListener("keypress", handleKeyPress);
-  }, [direction]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [state, direction, playerSquares]);
 
   return (
     <Box color="white">
