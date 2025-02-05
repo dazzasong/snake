@@ -97,6 +97,37 @@ function Game({ state, setState, isMuted }) {
     }
   }, [state]);
 
+    // Set direction based on user inputs
+    useEffect(() => {
+      if (state !== 1 || playerSquares.length === 0) return; // Only run when game starts
+  
+      const handleKeyDown = (e) => {
+        switch (e.key) {
+          case "ArrowUp":
+          case "w":
+            if (direction !== 3) setDirection(1); // Checks for opposite direction
+            break;
+          case "ArrowLeft":
+          case "a":
+            if (direction !== 4) setDirection(2);
+            break;
+          case "ArrowDown":
+          case "s":
+            if (direction !== 1) setDirection(3);
+            break;
+          case "ArrowRight":
+          case "d":
+            if (direction !== 2) setDirection(4);
+            break;
+          default:
+            // do nothing
+        }
+      };
+  
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [state, direction, playerSquares]);
+
   useEffect(() => {
     if (state !== 1 || playerSquares.length === 0) return; // Only run during game
 
@@ -121,10 +152,10 @@ function Game({ state, setState, isMuted }) {
       // Snake grows when it consumes food
       if (playerSquares[0][0] === foodPosition[0] && playerSquares[0][1] === foodPosition[1]) {
         /*
-        setPlayerSquares((prevPlayerSquares) => {
+      setPlayerSquares((prevPlayerSquares) => {
           const [x, y, aim] = prevPlayerSquares[-1];
           switch (aim) { // Last player square direction
-            case 1: // Up
+          case 1: // Up
               prevPlayerSquares.push([x, y+1, aim]);
               break;
             case 2: // Left
@@ -132,15 +163,15 @@ function Game({ state, setState, isMuted }) {
               break;
             case 3: // Down
               prevPlayerSquares.push([x, y-1, aim]);
-              break;
-            case 4: // Right
+            break;
+          case 4: // Right
               prevPlayerSquares.push([x-1, y, aim]);
-              break;
-            default:
-              // do nothing
-          }
+            break;
+          default:
+            // do nothing
+        }
           return prevPlayerSquares;
-        });
+      });
         */
         setScore((prevScore) => prevScore + 1);
         setFoodPosition(randomPosition);
@@ -166,37 +197,6 @@ function Game({ state, setState, isMuted }) {
   
     return () => clearInterval(interval);
   }, [direction, playerSquares, foodPosition]);
-  
-  // Set direction based on user inputs
-  useEffect(() => {
-    if (state !== 1 || playerSquares.length === 0) return; // Only run when game starts
-
-    const handleKeyDown = (e) => {
-      switch (e.key) {
-        case "ArrowUp":
-        case "w":
-          if (direction !== 3) setDirection(1); // Checks for opposite direction
-          break;
-        case "ArrowLeft":
-        case "a":
-          if (direction !== 4) setDirection(2);
-          break;
-        case "ArrowDown":
-        case "s":
-          if (direction !== 1) setDirection(3);
-          break;
-        case "ArrowRight":
-        case "d":
-          if (direction !== 2) setDirection(4);
-          break;
-        default:
-          // do nothing
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [state, direction, playerSquares]);
 
   return (
     <Box color="white">
