@@ -2,33 +2,33 @@ import React, { useEffect, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { playSound } from "./App";
 
-function Square({ filled=false }) {
+function Square({ filled=false, isGridEnabled, snakeColor, foodColor }) {
   return (
-    <Box width={16} height={16} bgcolor={filled ? "#ffffff" : "#000000"} />
+    <Box width={16} height={16} bgcolor={filled ? "white" : "black"} border={isGridEnabled ? 1 : 0} />
   );
 }
 
-function Column({ squares }) {
+function Column({ squares, isGridEnabled, snakeColor, foodColor }) {
   return (
     <Stack>
       {Array.from([...squares]).map((square) => (
-        <Square filled={square} />
+        <Square filled={square} isGridEnabled={isGridEnabled} />
       ))}
     </Stack>
   );
 }
 
-function Grid({ grid }) {
+function Grid({ grid, isGridEnabled, snakeColor, foodColor }) {
   return (
     <Stack direction="row">
       {Array.from([...grid]).map((column) => (
-        <Column squares={column} />
+        <Column squares={column} isGridEnabled={isGridEnabled} />
       ))}
     </Stack>
   );
 }
 
-function Game({ state, setState, isMuted }) {
+function Game({ state, setState, isMuted, isGridEnabled, snakeColor, foodColor, borderColor }) {
   const [grid, setGrid] = useState([
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -68,6 +68,12 @@ function Game({ state, setState, isMuted }) {
 
   const randomPosition = () => [Math.floor(Math.random() * 25), Math.floor(Math.random() * 25)];
 
+  function includesPos(arr2D, targetArr) {
+    return arr2D.some((subArr) => {
+      Array.isArray(subArr) && subArr.length === targetArr.length && subArr.every((val, index) => val === targetArr[index])
+    });
+  }
+
   useEffect(() => {
     if (state === 1) {
       setScore(0);
@@ -89,7 +95,7 @@ function Game({ state, setState, isMuted }) {
         setHighScore(score);
         setMessage("GAME OVER - NEW BEST!");
       } else setMessage("GAME OVER");
-      setGrid((prevGrid) => prevGrid.map((column) => column.map(() => 0)));
+      setGrid((prevGrid) => prevGrid.map((column) => column.map(() => 0))); // Reset grid
       setDirection(0);
       setPlayerSquares([]);
       setFoodPosition([]);
@@ -128,79 +134,68 @@ function Game({ state, setState, isMuted }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [state, direction, playerSquares]);
 
+  // Updates playerSquares per frame
   useEffect(() => {
     if (state !== 1 || playerSquares.length === 0) return; // Only run during game
 
-    // Updates playerSquares per frame
     const interval = setInterval(() => {
-      setPlayerSquares((prevPlayerSquares) =>
-        prevPlayerSquares.map(([x, y]) => {
-          switch (direction) {
-            case 1: // Move up
-              return [x, y-1];
-            case 2: // Move left
-              return [x-1, y];
-            case 3: // Move down
-              return [x, y+1];
-            case 4: // Move right
-              return [x+1, y];
-            default:
-              return [x, y];
-          }
-        })
-      );
+      setPlayerSquares((prevPlayerSquares) => {
+        let newPlayerSquares = [...prevPlayerSquares];
+        let newPlayerHead = [...newPlayerSquares[0]]; // Create a copy of the head
+        switch (direction) {
+          case 1: newPlayerHead[1]--; break; // Up
+          case 2: newPlayerHead[0]--; break; // Left
+          case 3: newPlayerHead[1]++; break; // Down
+          case 4: newPlayerHead[0]++; break; // Right
+          default: return prevPlayerSquares;
+        }
+        newPlayerSquares.unshift(newPlayerHead); // Adds new playerHead to start
 
-      // Snake eats food
-      if (playerSquares[0][0] === foodPosition[0] && playerSquares[0][1] === foodPosition[1]) {
-        /*
-        setPlayerSquares((prevPlayerSquares) => {
-          const [x, y, aim] = prevPlayerSquares[-1];
-          switch (aim) { // Last player square direction
-            case 1: // Up
-              prevPlayerSquares.push([x, y+1, aim]);
-              break;
-            case 2: // Left
-              prevPlayerSquares.push([x+1, y, aim]);
-              break;
-            case 3: // Down
-              prevPlayerSquares.push([x, y-1, aim]);
-              break;
-            case 4: // Right
-              prevPlayerSquares.push([x-1, y, aim]);
-              break;
-            default:
-              // do nothing
-          }
+        // Unless food is consumed, remove the end of playerSquares
+        if (newPlayerHead[0] === foodPosition[0] && newPlayerHead[1] === foodPosition[1]) {
+          setScore((prevScore) => prevScore + 1);
+          setFoodPosition(randomPosition);
+          playSound("food.mp3", isMuted);
+        } else newPlayerSquares.pop();
+
+        // If snake goes out of bounds or hits itself, game over
+        if (newPlayerHead[0] < 0 ||
+            newPlayerHead[0] > 24 ||
+            newPlayerHead[1] < 0 ||
+            newPlayerHead[1] > 24 ||
+            prevPlayerSquares.some((pos) => Array.isArray(pos) && pos.length === newPlayerHead.length && pos.every((val, index) => val === newPlayerHead[index]))
+        ) {
+          setState(2);
           return prevPlayerSquares;
-        });
-        */
-        setScore((prevScore) => prevScore + 1);
-        setFoodPosition(randomPosition);
-        playSound("food.mp3", isMuted);
-      }
+        }
+
+        return newPlayerSquares;
+      });
     }, 64);
-
-    // Update the grid based on new playerSquares
-    setGrid((prevGrid) => {
-      const newGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid
-
-      for (let i = 0; i < playerSquares.length; i++) {
-        const [x, y] = playerSquares[i];
-        if (x >= 0 && x < 25 && y >= 0 && y < 25) newGrid[x][y] = 1;
-        else setState(2);
-      }
-
-      const [x, y] = foodPosition;
-      newGrid[x][y] = 1;
-      
-      return newGrid;
-    });
   
     return () => clearInterval(interval);
-  }, [direction, playerSquares, foodPosition]);
+  }, [state, direction, playerSquares, foodPosition]);
+
+  // Update the grid based on new playerSquares
+  useEffect(() => {
+    if (state !== 1 || playerSquares.length === 0) return; // Only run during game
+
+    setGrid((prevGrid) => {
+      const updatedGrid = prevGrid.map((column) => column.map(() => 0)); // Reset grid  
+      for (let i = 0; i < playerSquares.length; i++) {
+        const [x, y] = playerSquares[i];
+        updatedGrid[x][y] = 1;
+      }
+  
+      const [x, y] = foodPosition;
+      updatedGrid[x][y] = 1;
+      
+      return updatedGrid;
+    });
+  }, [state, playerSquares, foodPosition])
 
   return (
-    <Box color="white">
+    <Box color={borderColor}>
       <Stack direction="row" spacing={2}>
         <Typography fontSize={18} fontFamily="pixelify sans">SCORE: {score}</Typography>
         <Typography fontSize={18} fontFamily="pixelify sans">HIGH SCORE: {highScore}</Typography>
@@ -209,10 +204,9 @@ function Game({ state, setState, isMuted }) {
         justifyContent="center"
         alignItems="center"
         border={2}
-        borderColor="#ffffff"
       >
         <Typography fontSize={18} fontFamily="pixelify sans" position="absolute">{message}</Typography>
-        <Grid grid={grid} />
+        <Grid grid={grid} isGridEnabled={isGridEnabled} snakeColor={snakeColor} foodColor={foodColor} />
       </Stack>
     </Box>
   );

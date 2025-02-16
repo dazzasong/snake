@@ -11,9 +11,14 @@ export function playSound(path, muted=false) {
 
 function App() {
   const [gameState, setGameState] = useState(0);
-  const [settingsWindowOpen, setSettingsWindowOpen] = useState(false);
 
+  // Settings states
+  const [settingsWindowOpen, setSettingsWindowOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [isGridEnabled, setIsGridEnabled] = useState(false);
+  const [snakeColor, setSnakeColor] = useState("#ffffff");
+  const [foodColor, setFoodColor] = useState("#ffffff");
+  const [borderColor, setBorderColor] = useState("#ffffff");
 
   const handleGameState = () => {
     if (gameState === 1) setGameState(2);
@@ -46,7 +51,7 @@ function App() {
           fontFamily="pixelify sans"
           sx={{ userSelect: "none" }}
         >
-          SNAKE
+          SNAKE 2.0
         </Typography>
         <Stack
           direction="row"
@@ -81,9 +86,9 @@ function App() {
             <Typography fontSize={24} fontFamily="pixelify sans">Settings</Typography>
           </Button>
         </Stack>
-        <Game state={gameState} setState={setGameState} isMuted={isMuted} />
+        <Game state={gameState} setState={setGameState} isMuted={isMuted} isGridEnabled={isGridEnabled} snakeColor={snakeColor} foodColor={foodColor} borderColor={borderColor} />
         { settingsWindowOpen &&
-          <Settings setSettingsWindowOpen={setSettingsWindowOpen} isMuted={isMuted} setIsMuted={setIsMuted} />
+          <Settings setSettingsWindowOpen={setSettingsWindowOpen} isMuted={isMuted} setIsMuted={setIsMuted} isGridEnabled={isGridEnabled} setIsGridEnabled={setIsGridEnabled} snakeColor={snakeColor} setSnakeColor={setSnakeColor} foodColor={foodColor} setFoodColor={setFoodColor} borderColor={borderColor} setBorderColor={setBorderColor} />
         }
       </Stack>
     </div>

@@ -1,16 +1,18 @@
-import { Box, Button, Stack, Switch, Typography } from "@mui/material";
+import { Box, Button, Input, Stack, Switch, Typography } from "@mui/material";
 import { playSound } from "./App";
 
-function Settings({ setSettingsWindowOpen, isMuted, setIsMuted }) {
+function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, setIsGridEnabled, snakeColor, setSnakeColor, foodColor, setFoodColor, borderColor, setBorderColor }) {
+  const labels = ["Mute sounds",  "Enable grid", "Snake color", "Food color", "Border color"];
+
   return (
     <Stack
-      alignItems="center"
+      spacing={1}
       bgcolor="white"
       padding={1}
       border={2}
       position="absolute"
     >
-      <Typography fontFamily="pixelify sans">Settings</Typography>
+      <Typography fontFamily="pixelify sans"><u>Settings</u></Typography>
       <Box position="absolute" top={0} right={0}>
         <Button
           color="error"
@@ -23,13 +25,19 @@ function Settings({ setSettingsWindowOpen, isMuted, setIsMuted }) {
           x
         </Button>
       </Box>
-      <Box>
-        <Stack direction="row" alignItems="center">
-          <Typography fontFamily="pixelify sans">Mute sounds:</Typography>
-          <Switch checked={isMuted} onChange={() => setIsMuted(!isMuted)} />
+      <Stack direction="row" spacing={1}>
+        <Stack justifyContent="space-between">
+          {labels.map((l) => <Typography fontFamily="pixelify sans">{l}:</Typography>)}
         </Stack>
-        <Typography fontFamily="pixelify sans">-- WASD or Arrow Keys to move --</Typography>
-      </Box>
+        <Stack justifyContent="space-between">    
+          <Switch checked={isMuted} color="success" onChange={() => setIsMuted((prevState) => !prevState)} />
+          <Switch checked={isGridEnabled} color="success" onChange={() => setIsGridEnabled((prevState) => !prevState)} />
+          <Input value={snakeColor} type="color" fullWidth onChange={(e) => setSnakeColor(e.target.value)} />
+          <Input value={foodColor} type="color" fullWidth onChange={(e) => setFoodColor(e.target.value)} />
+          <Input value={borderColor} type="color" fullWidth onChange={(e) => setBorderColor(e.target.value)} />
+        </Stack>
+      </Stack>
+      <Typography fontFamily="pixelify sans">-- WASD or Arrow Keys to move --</Typography>
     </Stack>
   );
 }
