@@ -163,7 +163,7 @@ function Game({ state, setState, isMuted, isGridEnabled, snakeColor, foodColor, 
             newPlayerHead[0] > 24 ||
             newPlayerHead[1] < 0 ||
             newPlayerHead[1] > 24 ||
-            newPlayerSquares.some((pos) => Array.isArray(pos) && pos.length === newPlayerHead.length && pos.every((val, index) => val === newPlayerHead[index]))
+            prevPlayerSquares.some((pos) => Array.isArray(pos) && pos.length === newPlayerHead.length && pos.every((val, index) => val === newPlayerHead[index]))
         ) {
           setState(2);
           return prevPlayerSquares;
