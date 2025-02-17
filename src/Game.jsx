@@ -171,7 +171,7 @@ function Game({ state, setState, isMuted, isGridEnabled, snakeColor, foodColor, 
 
         return newPlayerSquares;
       });
-    }, 64);
+    }, 75);
   
     return () => clearInterval(interval);
   }, [state, direction, playerSquares, foodPosition]);
