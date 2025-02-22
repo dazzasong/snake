@@ -2,23 +2,29 @@ import React, { useEffect, useState } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 import { playSound } from "./App";
 
-function Square({ filled=false, isGridEnabled, snakeColor, foodColor }) {
+function Square({ filled=false, isGridEnabled, isFood }) {
   return (
-    <Box width={16} height={16} bgcolor={filled ? "white" : "black"} border={isGridEnabled ? 1 : 0} />
+    <Box width={16} height={16} bgcolor={filled ? "white" : "black"} border={isGridEnabled ? 1 : 0}>
+      { isFood &&
+        <Box position="absolute">
+          <img src="berry.png" width={24} />
+        </Box>
+      }
+    </Box>
   );
 }
 
-function Column({ squares, isGridEnabled, snakeColor, foodColor }) {
+function Column({ squares, isGridEnabled }) {
   return (
     <Stack>
       {Array.from([...squares]).map((square) => (
-        <Square filled={square} isGridEnabled={isGridEnabled} />
+        <Square filled={square === 1} isGridEnabled={isGridEnabled} isFood={square === 2} />
       ))}
     </Stack>
   );
 }
 
-function Grid({ grid, isGridEnabled, snakeColor, foodColor }) {
+function Grid({ grid, isGridEnabled }) {
   return (
     <Stack direction="row">
       {Array.from([...grid]).map((column) => (
@@ -28,7 +34,7 @@ function Grid({ grid, isGridEnabled, snakeColor, foodColor }) {
   );
 }
 
-function Game({ state, setState, isMuted, isGridEnabled, snakeColor, foodColor, borderColor }) {
+function Game({ state, setState, isMuted, isGridEnabled, borderColor }) {
   const [grid, setGrid] = useState([
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -188,7 +194,7 @@ function Game({ state, setState, isMuted, isGridEnabled, snakeColor, foodColor, 
       }
   
       const [x, y] = foodPosition;
-      updatedGrid[x][y] = 1;
+      updatedGrid[x][y] = 2;
       
       return updatedGrid;
     });
@@ -206,7 +212,7 @@ function Game({ state, setState, isMuted, isGridEnabled, snakeColor, foodColor, 
         border={2}
       >
         <Typography fontSize={18} fontFamily="pixelify sans" position="absolute">{message}</Typography>
-        <Grid grid={grid} isGridEnabled={isGridEnabled} snakeColor={snakeColor} foodColor={foodColor} />
+        <Grid grid={grid} isGridEnabled={isGridEnabled} />
       </Stack>
     </Box>
   );

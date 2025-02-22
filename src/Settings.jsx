@@ -1,8 +1,8 @@
 import { Box, Button, Input, Stack, Switch, Typography } from "@mui/material";
 import { playSound } from "./App";
 
-function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, setIsGridEnabled, snakeColor, setSnakeColor, foodColor, setFoodColor, borderColor, setBorderColor }) {
-  const labels = ["Mute sounds",  "Enable grid", "Snake color", "Food color", "Border color"];
+function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, setIsGridEnabled, borderColor, setBorderColor }) {
+  const labels = ["Mute sounds", "Enable grid", "Border color"];
 
   return (
     <Stack
@@ -32,8 +32,6 @@ function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, s
         <Stack justifyContent="space-between">    
           <Switch checked={isMuted} color="success" onChange={() => setIsMuted((prevState) => !prevState)} />
           <Switch checked={isGridEnabled} color="success" onChange={() => setIsGridEnabled((prevState) => !prevState)} />
-          <Input value={snakeColor} type="color" fullWidth onChange={(e) => setSnakeColor(e.target.value)} />
-          <Input value={foodColor} type="color" fullWidth onChange={(e) => setFoodColor(e.target.value)} />
           <Input value={borderColor} type="color" fullWidth onChange={(e) => setBorderColor(e.target.value)} />
         </Stack>
       </Stack>
