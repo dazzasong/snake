@@ -1,5 +1,6 @@
-import { Box, Button, Input, Stack, Switch, Typography } from "@mui/material";
+import { Button, Fab, Input, Stack, Switch, Typography } from "@mui/material";
 import { playSound } from "./App";
+import { Close } from "@mui/icons-material";
 
 function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, setIsGridEnabled, borderColor, setBorderColor }) {
   const labels = ["Mute sounds", "Enable grid", "Border color"];
@@ -12,19 +13,18 @@ function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, s
       border={2}
       position="absolute"
     >
-      <Typography fontFamily="pixelify sans"><u>Settings</u></Typography>
-      <Box position="absolute" top={0} right={0}>
-        <Button
-          color="error"
+      <Stack direction="row" justifyContent="space-between">
+        <Typography fontFamily="pixelify sans"><u>Settings</u></Typography>
+        <Fab
           size="small"
           onClick={() => {
             setSettingsWindowOpen(false);
             playSound("button-click.mp3", isMuted);
           }}
         >
-          x
-        </Button>
-      </Box>
+          <Close />
+        </Fab>
+      </Stack>
       <Stack direction="row" spacing={1}>
         <Stack justifyContent="space-between">
           {labels.map((l) => <Typography fontFamily="pixelify sans">{l}:</Typography>)}
