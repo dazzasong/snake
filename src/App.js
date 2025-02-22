@@ -66,7 +66,7 @@ function App() {
             disableRipple
             onClick={() => {
               handleGameState();
-              playSound("beep.mp3", isMuted);
+              playSound("button-click.mp3", isMuted);
             }}
           >
             <Typography fontSize={24} fontFamily="pixelify sans">{buttonText}</Typography>
@@ -78,7 +78,7 @@ function App() {
             disableRipple
             onClick={() => {
               setSettingsWindowOpen(!settingsWindowOpen);
-              playSound("beep.mp3", isMuted);
+              playSound("button-click.mp3", isMuted);
             }}
           >
             <Typography fontSize={24} fontFamily="pixelify sans">Settings</Typography>

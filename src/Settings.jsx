@@ -19,7 +19,7 @@ function Settings({ setSettingsWindowOpen, isMuted, setIsMuted, isGridEnabled, s
           size="small"
           onClick={() => {
             setSettingsWindowOpen(false);
-            playSound("beep.mp3", isMuted);
+            playSound("button-click.mp3", isMuted);
           }}
         >
           x

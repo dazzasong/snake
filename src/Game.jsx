@@ -161,7 +161,7 @@ function Game({ state, setState, isMuted, isGridEnabled, borderColor }) {
         if (newPlayerHead[0] === foodPosition[0] && newPlayerHead[1] === foodPosition[1]) {
           setScore((prevScore) => prevScore + 1);
           setFoodPosition(randomPosition);
-          playSound("food.mp3", isMuted);
+          playSound("eat.mp3", isMuted);
         } else newPlayerSquares.pop();
 
         // If snake goes out of bounds or hits itself, game over
