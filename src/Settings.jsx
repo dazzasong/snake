@@ -1,4 +1,4 @@
-import { Button, Fab, Input, Stack, Switch, Typography } from "@mui/material";
+import { Fab, Input, Stack, Switch, Typography } from "@mui/material";
 import { playSound } from "./App";
 import { Close } from "@mui/icons-material";
 

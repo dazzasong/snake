@@ -7,7 +7,7 @@ function Square({ filled=false, isGridEnabled, isFood }) {
     <Box width={16} height={16} bgcolor={filled ? "white" : "black"} border={isGridEnabled ? 1 : 0}>
       { isFood &&
         <Box position="absolute">
-          <img src="berry.png" width={24} />
+          <img src="berry.png" alt="berry" width={24} />
         </Box>
       }
     </Box>
@@ -74,12 +74,6 @@ function Game({ state, setState, isMuted, isGridEnabled, borderColor }) {
 
   const randomPosition = () => [Math.floor(Math.random() * 25), Math.floor(Math.random() * 25)];
 
-  function includesPos(arr2D, targetArr) {
-    return arr2D.some((subArr) => {
-      Array.isArray(subArr) && subArr.length === targetArr.length && subArr.every((val, index) => val === targetArr[index])
-    });
-  }
-
   useEffect(() => {
     if (state === 1) {
       setScore(0);
@@ -107,6 +101,7 @@ function Game({ state, setState, isMuted, isGridEnabled, borderColor }) {
       setFoodPosition([]);
       playSound("game-over.mp3", isMuted);
     }
+  // eslint-disable-next-line
   }, [state]);
 
   // Set direction based on user inputs
@@ -180,6 +175,7 @@ function Game({ state, setState, isMuted, isGridEnabled, borderColor }) {
     }, 75);
   
     return () => clearInterval(interval);
+    // eslint-disable-next-line
   }, [state, direction, snakeSquares, foodPosition]);
 
   // Update the grid based on new snakeSquares
